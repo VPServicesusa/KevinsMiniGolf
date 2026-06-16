@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kevin's Mini Golf</title>
+
+<!-- EDIT THESE: set to your real GitHub Pages URL once the repo name is final -->
+<link rel="canonical" href="https://vpservicesusa.github.io/KevinsMiniGolf/">
+<meta name="description" content="Kevin's Mini Golf — a slingshot putting game with 18 hand-crafted holes, 100+ balls to unlock, a hole editor, and pass-and-play multiplayer. Fully offline on iPhone & iPad.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kevin's Mini Golf">
+<meta property="og:title" content="Kevin's Mini Golf">
+<meta property="og:description" content="Slingshot putting with 18 hand-crafted holes, 100+ balls, a hole editor, and pass-and-play multiplayer. Plays fully offline.">
+<meta property="og:url" content="https://vpservicesusa.github.io/KevinsMiniGolf/">
+<meta property="og:image" content="https://vpservicesusa.github.io/KevinsMiniGolf/icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kevin's Mini Golf">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --grape:#3a1a55;
+    --grape-2:#5b2a86;
+    --pink:#f0468c;
+    --pink-deep:#d62e74;
+    --blue:#3fb6f0;
+    --green:#3fae3f;
+    --green-deep:#2f8f33;
+    --cream:#fbf7ff;
+    --ink:#2b1840;
+    --muted:#6b5a80;
+    --cup:#c9a66b;
+    --shadow:0 10px 30px rgba(58,26,85,.16);
+    --shadow-lg:0 22px 50px rgba(58,26,85,.22);
+    --radius:22px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:"Fredoka",sans-serif;line-height:1.1;margin:0}
+  a{color:var(--pink-deep)}
+  img{max-width:100%;display:block}
+
+  .wrap{width:min(1040px,92vw);margin:0 auto}
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(251,247,255,.82);
+    backdrop-filter:saturate(160%) blur(12px);
+    border-bottom:1px solid rgba(91,42,134,.12);
+  }
+  .nav-inner{display:flex;align-items:center;gap:14px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Fredoka";font-weight:600;font-size:1.15rem;color:var(--grape-2);text-decoration:none}
+  .brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 3px 8px rgba(58,26,85,.25)}
+  .nav-links{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .nav-links a{
+    text-decoration:none;color:var(--grape-2);font-weight:700;font-size:.95rem;
+    padding:8px 14px;border-radius:999px;transition:background .15s,color .15s;
+  }
+  .nav-links a:hover{background:rgba(240,70,140,.12);color:var(--pink-deep)}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;text-align:center;
+    padding:64px 0 130px;
+    background:
+      radial-gradient(120% 90% at 50% -10%, #b07be0 0%, #8e5fd0 38%, #6f44b8 72%, #5b2a86 100%);
+    color:#fff;
+  }
+  .hero .wrap{position:relative;z-index:2}
+  .pill{
+    display:inline-block;font-weight:800;font-size:.82rem;letter-spacing:.04em;
+    text-transform:uppercase;color:#fff;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    padding:6px 14px;border-radius:999px;margin-bottom:22px;
+  }
+  .hero-icon{
+    width:128px;height:128px;border-radius:28px;margin:0 auto 22px;
+    box-shadow:0 18px 40px rgba(20,8,40,.45);
+  }
+  .hero h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:700;letter-spacing:-.01em}
+  .hero .tag{
+    font-size:clamp(1.05rem,2.4vw,1.35rem);max-width:30ch;margin:18px auto 0;
+    color:rgba(255,255,255,.92);font-weight:600;
+  }
+  .byline{margin-top:22px;font-weight:700;color:rgba(255,255,255,.78);font-size:.98rem}
+  .byline a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+  .cta-row{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;
+    padding:14px 26px;border-radius:999px;font-size:1.02rem;transition:transform .12s, box-shadow .12s;
+  }
+  .btn-primary{background:var(--pink);color:#fff;box-shadow:0 10px 24px rgba(214,46,116,.45)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(214,46,116,.55)}
+  .btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
+
+  /* felt + putt-line signature at base of hero */
+  .green-strip{position:absolute;left:0;right:0;bottom:0;height:120px;z-index:1}
+
+  /* ---------- sections ---------- */
+  section{padding:74px 0}
+  .eyebrow{
+    font-family:"Fredoka";font-weight:600;color:var(--pink-deep);
+    text-transform:uppercase;letter-spacing:.12em;font-size:.85rem;margin-bottom:8px;
+  }
+  .sec-title{font-size:clamp(1.9rem,4.4vw,2.7rem);color:var(--grape);font-weight:700}
+  .sec-intro{color:var(--muted);max-width:54ch;margin-top:12px;font-size:1.08rem;font-weight:600}
+
+  .features{background:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:38px}
+  .card{
+    background:var(--cream);border:1px solid rgba(91,42,134,.10);border-radius:var(--radius);
+    padding:26px 24px;box-shadow:var(--shadow);transition:transform .15s, box-shadow .15s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .card .emoji{font-size:2rem;line-height:1;display:block;margin-bottom:12px}
+  .card h3{font-size:1.28rem;color:var(--grape-2);font-weight:600;margin-bottom:6px}
+  .card p{margin:0;color:var(--muted);font-weight:600}
+
+  /* support */
+  .support{background:linear-gradient(160deg,#fef0f6,#f3ecfb)}
+  .support .panel{
+    background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:40px;margin-top:30px;text-align:center;
+  }
+  .support .email{
+    font-family:"Fredoka";font-weight:600;font-size:clamp(1.2rem,3.4vw,1.7rem);
+    color:var(--pink-deep);text-decoration:none;word-break:break-word;
+  }
+  .support .email:hover{text-decoration:underline}
+  .support .note{color:var(--muted);font-weight:600;margin-top:14px;max-width:46ch;margin-left:auto;margin-right:auto}
+
+  /* faq */
+  .faq details{
+    background:#fff;border:1px solid rgba(91,42,134,.12);border-radius:16px;
+    padding:0 22px;margin-top:14px;box-shadow:0 4px 14px rgba(58,26,85,.06);overflow:hidden;
+  }
+  .faq summary{
+    cursor:pointer;list-style:none;font-family:"Fredoka";font-weight:600;font-size:1.12rem;
+    color:var(--grape-2);padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:1.6rem;color:var(--pink);transition:transform .2s;line-height:1}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq .answer{padding:0 0 22px;color:var(--muted);font-weight:600}
+  .faq .answer b{color:var(--ink)}
+
+  /* privacy */
+  .privacy{background:#fff}
+  .privacy .body{max-width:70ch;margin-top:26px}
+  .privacy h3{font-family:"Fredoka";font-weight:600;color:var(--grape-2);font-size:1.25rem;margin:28px 0 8px}
+  .privacy p,.privacy li{color:var(--muted);font-weight:600}
+  .privacy ul{padding-left:20px}
+  .updated{color:var(--pink-deep);font-weight:800;font-size:.95rem}
+
+  /* footer */
+  footer{background:var(--grape);color:rgba(255,255,255,.8);text-align:center;padding:40px 0}
+  footer .f-brand{font-family:"Fredoka";font-weight:600;color:#fff;font-size:1.3rem;margin-bottom:8px}
+  footer a{color:#fff;text-decoration:none;font-weight:700}
+  footer a:hover{text-decoration:underline}
+  footer .links{margin-top:6px}
+  footer .links a{margin:0 8px}
+
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><img src="icon.png" alt="">Kevin's Mini Golf</a>
+    <nav class="nav-links">
+      <a href="#features">The Game</a>
+      <a href="#support">Support</a>
+      <a href="#faq">FAQ</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="pill">iPhone &amp; iPad · iOS 16+</span>
+      <img class="hero-icon" src="icon.png" alt="Kevin's Mini Golf app icon">
+      <h1>Kevin's Mini Golf</h1>
+      <p class="tag">Slingshot putting with 18 hand-crafted holes, 100+ balls to unlock, a hole editor, and pass-and-play with friends.</p>
+      <p class="byline">By Kevin Petersen · <a href="mailto:kevinpetersen2110@gmail.com">kevinpetersen2110@gmail.com</a></p>
+      <div class="cta-row">
+        <!-- EDIT: paste your App Store link here once live, or remove this button -->
+        <a class="btn btn-primary" href="#">Download on the App Store</a>
+        <a class="btn btn-ghost" href="#features">See the game</a>
+      </div>
+    </div>
+    <svg class="green-strip" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,46 C320,8 560,86 760,60 C980,32 1180,86 1440,40 L1440,120 L0,120 Z" fill="#3fae3f"/>
+      <path d="M0,46 C320,8 560,86 760,60 C980,32 1180,86 1440,40" fill="none" stroke="#2f8f33" stroke-width="3" opacity=".5"/>
+      <!-- dotted putt line + ball + cup: the in-game aim guide -->
+      <g>
+        <line x1="430" y1="92" x2="930" y2="92" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 18" opacity=".9"/>
+        <ellipse cx="930" cy="96" rx="20" ry="7" fill="#000" opacity=".18"/>
+        <circle cx="930" cy="92" r="11" fill="#fff" stroke="#d8d8d8" stroke-width="1.5"/>
+        <ellipse cx="430" cy="93" rx="16" ry="6" fill="#1c1208"/>
+      </g>
+    </svg>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="wrap">
+      <p class="eyebrow">On the green</p>
+      <h2 class="sec-title">Easy to pick up, hard to ace</h2>
+      <p class="sec-intro">Drag back from your ball like a slingshot and release — the dotted line shows your aim and bounce. The harder you pull, the harder you hit.</p>
+      <div class="grid">
+        <div class="card">
+          <span class="emoji">⛳</span>
+          <h3>18 signature holes</h3>
+          <p>A full course of hand-designed holes, each with a par to beat. Chase birdies, hunt aces, and earn gold.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">🧱</span>
+          <h3>Hazards &amp; gadgets</h3>
+          <p>Water, sand, ice, and mud get in your way. Cannons blast you across the green, plus teleports, boosters, and funnels.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">🍎</span>
+          <h3>100+ balls to collect</h3>
+          <p>Putt with an apple, a kiwi, a diamond. Earn coins as you play, then spend them on balls, trails, themes, and sounds.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">👥</span>
+          <h3>Pass &amp; play</h3>
+          <p>Hand the phone around with up to 6 players in turn-based local multiplayer. Built for couch competitions.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">🔨</span>
+          <h3>Build your own holes</h3>
+          <p>Design holes from scratch with a full editor — drop in hazards and gadgets, then share them by code and import friends' holes.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">📴</span>
+          <h3>Plays offline</h3>
+          <p>The whole game runs on your device. No account, no connection needed, no ads, and no in-app purchases.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPORT -->
+  <section class="support" id="support">
+    <div class="wrap">
+      <p class="eyebrow">Support</p>
+      <h2 class="sec-title">Need a hand?</h2>
+      <p class="sec-intro">Found a bug, stuck on a hole, or have an idea? I'd love to hear it.</p>
+      <div class="panel">
+        <a class="email" href="mailto:kevinpetersen2110@gmail.com">kevinpetersen2110@gmail.com</a>
+        <p class="note">I read every message and usually reply within a few days. Telling me your device and iOS version helps me track things down faster.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="sec-title">Questions, answered</h2>
+      <details>
+        <summary>How do I play?</summary>
+        <div class="answer">Drag back from your ball to set the direction and power, then release — like a slingshot. The dotted line previews your aim and how the ball will bounce. A <b>par</b> on each hole tells you the score to beat.</div>
+      </details>
+      <details>
+        <summary>What can I do in the game?</summary>
+        <div class="answer">Play the <b>18 signature holes</b>, spend coins in the <b>shop</b> on 100+ balls and other cosmetics, build courses in the <b>hole editor</b>, and challenge friends in <b>pass-and-play multiplayer</b> for up to 6 players.</div>
+      </details>
+      <details>
+        <summary>Can I play without the internet?</summary>
+        <div class="answer">Yes — Kevin's Mini Golf is fully playable offline. The first time you launch with a connection it loads its display font for nicer type, but every part of the game (holes, physics, saves, and sound) works with no connection at all.</div>
+      </details>
+      <details>
+        <summary>How is my progress saved?</summary>
+        <div class="answer">Everything is stored locally on your device — your level progress, unlocked items, created holes, stats, and settings. Nothing is uploaded anywhere.</div>
+      </details>
+      <details>
+        <summary>How do I share a hole I made?</summary>
+        <div class="answer">In the hole editor, use <b>Share</b> to generate a text code you can send to a friend. They paste it with <b>Import</b> to add that hole to their game. Sharing is manual and offline — there's no online feed.</div>
+      </details>
+      <details>
+        <summary>How do I reset my progress?</summary>
+        <div class="answer">Use <b>Reset all progress</b> in Settings for a clean start, or delete the app from your device to remove all of its local data. You can also begin a fresh round at any time without wiping your unlocks.</div>
+      </details>
+      <details>
+        <summary>Are there ads or in-app purchases?</summary>
+        <div class="answer">No. There are no ads and no in-app purchases — it's the whole game, start to finish.</div>
+      </details>
+      <details>
+        <summary>Is there online multiplayer?</summary>
+        <div class="answer">Multiplayer is local pass-and-play on one device, up to 6 players. There's no online play in the current release — email me if it's something you'd like to see.</div>
+      </details>
+      <details>
+        <summary>What ages is it for?</summary>
+        <div class="answer">Family-friendly throughout. It's bright, cartoon mini golf with no graphic content — just putting.</div>
+      </details>
+      <details>
+        <summary>What devices does it run on?</summary>
+        <div class="answer">iPhone and iPad running iOS 16 or later. The game plays in landscape.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="privacy" id="privacy">
+    <div class="wrap">
+      <p class="eyebrow">Privacy Policy</p>
+      <h2 class="sec-title">Your data stays on your device</h2>
+      <p class="updated">Last updated: June 2026</p>
+      <div class="body">
+        <p>Kevin's Mini Golf ("the App") is a locally-stored, device-only application. The App does not collect, transmit, store, sell, or share any personal data with any party.</p>
+
+        <h3>What we store locally</h3>
+        <p>The App uses your device's local storage to save:</p>
+        <ul>
+          <li>Your level progress, unlocked items, and created holes</li>
+          <li>Your statistics, records, and achievements</li>
+          <li>Your in-app preferences (sound, music, theme, active player, and similar)</li>
+        </ul>
+        <p>This data stays on your device. It is not transmitted to any server, and the developer has no access to it.</p>
+
+        <h3>No third-party services</h3>
+        <p>The App does not use any third-party analytics, advertising, tracking, or crash-reporting services.</p>
+
+        <h3>No purchases</h3>
+        <p>The App contains no in-app purchases and no real-money transactions.</p>
+
+        <h3>Children</h3>
+        <p>The App is suitable for all ages. Because it does not collect any personal data, it complies with COPPA (the US Children's Online Privacy Protection Act) and similar laws by not collecting anything from users of any age in the first place.</p>
+
+        <h3>Data deletion</h3>
+        <p>All App data is stored on your device. To remove everything, delete the App — iOS will remove all of its associated data.</p>
+
+        <h3>Contact</h3>
+        <p>Questions about this policy? Email <a href="mailto:kevinpetersen2110@gmail.com">kevinpetersen2110@gmail.com</a>.</p>
+
+        <h3>Changes</h3>
+        <p>This policy may be updated. Changes take effect when posted on this page with a new "Last updated" date.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand">Kevin's Mini Golf</div>
+    <div>© 2026 Kevin Petersen</div>
+    <div class="links"><a href="#support">Support</a> · <a href="#privacy">Privacy</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
